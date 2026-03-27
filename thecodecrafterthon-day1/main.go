@@ -106,9 +106,14 @@ enterArgument:
 			}
 
 			if arg[0] == "div" {
-				result := fmt.Sprint(div(funcArg1, funcArg2))
-				fmt.Print("\n", result, "\n", "\n")
-				goto enterArgument
+				if funcArg2 == 0 {
+					fmt.Println(" Second number must be either 1 or greater")
+					goto enterArgument
+				} else {
+					result := fmt.Sprint(div(funcArg1, funcArg2))
+					fmt.Print("\n", result, "\n", "\n")
+					goto enterArgument
+				}
 			}
 			fmt.Print("\n", "The math operation you provided is either invalid or not supported at the moment", "\n")
 			goto enterArgument
