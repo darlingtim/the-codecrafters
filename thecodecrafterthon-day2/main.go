@@ -33,7 +33,7 @@ func decimal(dec string) string {
 		fmt.Println(err)
 	}
 	fmt.Printf("Binary: %b\n", number)
-	//fmt.Printf("Hexadecimal: ", dec )
+	fmt.Printf("Hex: %X\n", number)
 	return ""
 }
 
@@ -61,6 +61,11 @@ enterArgument:
 
 	if userInput.Scan() {
 		arg := strings.Fields(userInput.Text())
+		if userInput.Text() == "" || strings.TrimSpace(userInput.Text()) == "" {
+			fmt.Println("no input was gotten from you.")
+			goto enterArgument
+
+		}
 		if len(arg) == 1 {
 			if userInput.Text() == "quit" {
 				fmt.Print("\n", "Thanks for using codeCrafters Base Converter\n")
@@ -76,6 +81,7 @@ enterArgument:
 
 			} else if userInput.Text() == "convert" || userInput.Text() == "Convert" || userInput.Text() == "CONVERT" {
 				fmt.Printf("%q should be followed by a number that you want to convert then the binary name. Type help to see examples of how the commands should be entered.\n", userInput.Text())
+				goto enterArgument
 
 			} else {
 				fmt.Printf("%v is not a valid operation. First Arguement must be convert, help or quit\n", userInput.Text())
@@ -111,17 +117,35 @@ enterArgument:
 						fmt.Println(hexadecimal(arg[1]))
 						goto enterArgument
 					} else {
-						fmt.Printf("\nThe number you are trying to convert to decimal is not a valid HexaDecimal number. should only contain digits and letters from %q to %q", "A", "F")
+						fmt.Printf("\nThe number you are trying to convert to decimal is not a valid HexaDecimal number. should only contain digits and letters from %q to %q\n", "A", "F")
 						goto enterArgument
 					}
 
 				case "dec":
-					decimal(arg[1])
+					check := true
+					for _, number := range arg[1] {
+						if unicode.IsLetter(number) {
+							check = false
+							break
+						}
+					}
+					if check == true {
+						fmt.Println(decimal(arg[1]))
+						goto enterArgument
+					} else {
+						fmt.Printf("\nThe number you are trying to convert, is not a valid Decimal number. It should only contain digits from %q to %q\n", "0", "9")
+						goto enterArgument
+					}
+
+					//decimal(arg[1])
 				default:
 					fmt.Printf("converting %v is not currently supported\n", arg[2])
 					goto enterArgument
 
 				}
+			} else {
+				fmt.Println("unrecognized conversion format entered.")
+				goto enterArgument
 			}
 		}
 
