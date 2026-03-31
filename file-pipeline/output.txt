@@ -1,2 +1,15 @@
-
-ello Timothy
+PROCESSED SENTINEL FIELD REPORT
+1.  Alert Level Five Detected In Northern Sector
+2.     ACTION: confirm coordinates with Agent Bulus
+3.     CLASSIFIED: TARGET HAS BEEN RELOCATED
+4.     THE PERIMETER WAS BREACHED AT 03:47 LOCAL TIME
+5.        EXTRA SPACES WERE NOT CLEANED BEFORE LOGGING
+6.     CLASSIFIED: secondary site compromised
+7.     NORMAL REPORT LINE WITH NO ISSUES
+8.     ACTION: send backup to eastern checkpoint
+9.     Everything Was Fine Until It Wasn'T
+10.     ANOTHER NORMAL LINE FROM THE FIELD
+11.     CLASSIFIED: THE DIRECTOR HAS BEEN BRIEFED
+12.     Short Line
+13.     this line contains the word REVERSE in it so it gets special treatment
+14.     FFFFFYFYFFFIYFIYFYFIFYFIYFYIFIYFYFIYFIYFIYFIYFYIFIYFYFYFYYIFYIFYIFIYGFIYFIYFY [Truncated]

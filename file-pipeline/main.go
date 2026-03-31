@@ -42,6 +42,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"unicode"
 )
 
 func main() {
@@ -88,16 +89,111 @@ func main() {
 		fmt.Println("Input file is empty. Nothing to process.")
 	}
 
+	var processed []string
+	linesRead := 0
+	linesRemoved := 0
+
 	for _, line := range lineOfWords {
-		if strings.Split(line, "-") == nil || strings.Split(line, " ") == nil {
+		linesRead++
 
-		} else {
-
-			file, _ := os.OpenFile(outputFile, os.O_WRONLY, 0644)
-			fmt.Fprintln(file, line)
-
-			//os.WriteFile(outputFile, []byte(line+"\n"), 0644)
+		line = replaceTODO(line)
+		line = convertAllCaps(line)
+		line = convertLowerCase(line)
+		if removeBlankDash(line) {
+			linesRemoved++
+			continue
 		}
+		line = truncateLongLine(line)
+
+		processed = append(processed, line)
+
 	}
 
+	// writing HEADER to file
+	file, _ := os.OpenFile(outputFile, os.O_WRONLY, 0644)
+	fmt.Fprintln(file, "PROCESSED SENTINEL FIELD REPORT")
+
+	// write processed lines to output file
+	for i, processedLine := range processed {
+		fmt.Fprintf(file, "%d. %s\n", i+1, processedLine)
+	}
+
+	// Print Terminal Summary
+	fmt.Println("Summary Block")
+	fmt.Println("Lines read: ", linesRead)
+	fmt.Println("Lines written: ", len(processed))
+	fmt.Println("Lines removed: ", linesRemoved)
+	fmt.Print("Rules applied:\n", "1. [Replace TODO: with ✦ ACTION:]\n", "2. [Convert ALL CAPS lines to Title Case]\n", "3. [Convert all lowercase lines to uppercase]\n",
+		"4. [Remove lines that are only dashes or blanks]\n",
+		"5. [Flag any line longer than 80 characters with [TRUNCATED] at the end]\n")
+
+	//os.WriteFile(outputFile, []byte(line+"\n"), 0644)
+
+}
+
+//transformation functions
+
+// rule 5 Flag lines longer than 80 characters.
+func truncateLongLine(line string) string {
+	if len(line) > 80 {
+		truncated := line[:81]
+		return truncated + " [Truncated]"
+	}
+	return line
+}
+
+// Rule 4 Remove lines that are only dashes or blank
+func removeBlankDash(line string) bool {
+	l := strings.TrimSpace(line)
+	if l == "" || allDashes(l) {
+		return true
+	}
+	return false
+}
+
+func allDashes(s string) bool {
+	for _, v := range s {
+		if v != '-' {
+			return false
+		}
+	}
+	return len(s) > 0
+}
+
+// Rule 2 Convert ALL CAPS lines to Title Case
+func convertAllCaps(line string) string {
+	if isAllCaps(line) {
+		return toTitleCase(line)
+	}
+	return line
+}
+
+func isAllCaps(s string) bool {
+	hasLetter := false
+	for _, v := range s {
+		if unicode.IsLetter(v) {
+			hasLetter = true
+			if !unicode.IsUpper(v) {
+				return false
+			}
+		}
+	}
+	return hasLetter
+}
+
+func toTitleCase(s string) string {
+	return strings.Title(strings.ToLower(s))
+}
+
+// Rule 1 replace TODO: with ACTION:
+func replaceTODO(line string) string {
+	return strings.Replace(line, strings.ToLower("TODO:"), "ACTION:", 1)
+}
+
+// Rule 3
+func convertLowerCase(line string) string {
+	if line == strings.ToLower(line) && strings.TrimSpace(line) != "" {
+		return strings.ToUpper(line)
+	}
+	return line
 }
